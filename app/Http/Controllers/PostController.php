@@ -49,5 +49,28 @@ class PostController extends Controller
         ]);
     }
 
+    public function update(Request $request, string $id)
+    {
+        $post = Post::find($id);
 
+        if (!$post) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Post not found'
+            ], 404);
+        }
+
+        $post->update([
+            'title' => $request->title ?? $post->title,
+            'content' => $request->content ?? $post->content,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'data' => $post,
+            'message' => 'Post updated successfully'
+        ]);
+    }
+
+   
 }
