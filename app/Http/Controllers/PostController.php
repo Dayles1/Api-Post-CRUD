@@ -4,52 +4,50 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Requests\StorePostRequest;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $post=['name'=>'name'];
-        return response()->json($post);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $post=Post::create([
-            'title'=>$request->title
+        $posts = Post::all();
+        return response()->json([
+            'status' => 200,
+            'data' => $posts
         ]);
-        return response()->json($post,201);
-
-
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function store(StorePostRequest $request)
+    {
+        $post = Post::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'user_id' => auth()->user()->id,
+        ]);
+
+        return response()->json([
+            'status' => 201,
+            'data' => $post,
+            'message' => 'Post created successfully'
+        ], 201);
+    }
+
     public function show(string $id)
     {
-        //
+        $post = Post::find($id);
+
+        if (!$post) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Post not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data' => $post
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
