@@ -22,7 +22,7 @@ class PostController extends Controller
         $post = Post::create([
             'title' => $request->title,
             'content' => $request->content,
-            'user_id' => auth()->user()->id,
+            'user_id' => $request->id,
         ]);
 
         return response()->json([
